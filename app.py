@@ -42,14 +42,32 @@ st.markdown("""
     .stApp {background: transparent;}
     h1 {font-family: 'Montserrat', sans-serif; text-align: center; color: #00ff88; margin-bottom: 5px;}
     .subtitle {text-align: center; color: #ccc; margin-bottom: 30px;}
-    .result-box {padding: 20px; border-radius: 15px; text-align: center; margin: 20px 0;}
+    .result-box {
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        margin: 20px 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
     .ewaste {background: #ff4444; color: white;}
     .non-ewaste {background: #00C851; color: white;}
     .confidence {font-size: 1.5em; font-weight: bold;}
     .footer {text-align: center; color: #888; margin-top: 50px;}
     [data-testid="column"] {display: flex; align-items: center;}
+
+    
+    [data-testid="stVerticalBlock"] > div[data-testid="column"]:nth-child(1),
+    [data-testid="stVerticalBlock"] > div[data-testid="column"]:nth-child(2) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 st.markdown("<h1>♻️ E-Waste Detector AI</h1>", unsafe_allow_html=True)
@@ -102,6 +120,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
