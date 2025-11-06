@@ -5,7 +5,8 @@ from PIL import Image
 import numpy as np
 import cv2
 import streamlit.components.v1 as components
-
+from gtts import gTTS
+import io
 
 st.set_page_config(page_title="E-Waste AI", page_icon="Recycle", layout="centered")
 
@@ -22,18 +23,10 @@ output_details = interpreter.get_output_details()
 
 
 def speak(text):
-    components.html(rf"""
-    <script>
-    const synth = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance("{text}");
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-    synth.cancel();
-    synth.speak(utterance);
-    </script>
-    """, height=0)
-
+    tts = gTTS(text)
+    audio_fp = io.BytesIO()
+    tts.write_to_fp(audio_fp)
+    st.audio(audio_fp.getvalue(), format='audio/mp3')
 
 st.markdown("""
 <style>
@@ -101,6 +94,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
