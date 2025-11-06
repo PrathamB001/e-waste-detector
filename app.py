@@ -56,27 +56,22 @@ st.markdown("""
     .non-ewaste {background: #00C851; color: white;}
     .confidence {font-size: 1.5em; font-weight: bold;}
     .footer {text-align: center; color: #888; margin-top: 50px;}
-
     
-    [data-testid="stHorizontalBlock"] {
+    [data-testid="column"]:has(img) {
         display: flex !important;
-        align-items: stretch !important;
+        align-items: flex-start !important;  /* top align the image */
     }
-    [data-testid="column"] {
+
+    [data-testid="column"]:has(.result-box) {
         display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
+        align-items: flex-start !important;  /* same top baseline */
+        padding-top: 6px;  /* fine-tune: adjust this number until perfect (5–10px typical) */
     }
-    [data-testid="column"] > div:first-child {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        height: 100%;
+
+    .result-box {
+        transform: translateY(-4px);  /* nudges it upward slightly */
     }
-    img {
-        vertical-align: middle !important;
-        display: inline-block !important;
-    }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -132,6 +127,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
