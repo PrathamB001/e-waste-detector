@@ -89,6 +89,13 @@ st.markdown("""
         height: auto !important;
         display: block !important;
     }
+    [data-testid="column"]:has(.result-box) .result-box {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+    
 </style>
 """, unsafe_allow_html=True)
 
@@ -145,6 +152,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
