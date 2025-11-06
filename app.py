@@ -153,39 +153,10 @@ if img_file:
 _, buf = cv2.imencode('.jpg', cv2.cvtColor(display_img, cv2.COLOR_RGB2BGR))
 st.download_button("Save Photo", buf.tobytes(), f"{label.lower()}.jpg", "image/jpeg")
 
-#  JS: match right card height to left image/video height 
-components.html(r"""
-<script>
-function matchResultBoxHeight(){
-  
-  const media = document.querySelector('div[data-testid="column"] img, div[data-testid="column"] video');
-  const result = document.querySelector('.result-box');
-
-  if(!media || !result) return;
-
-  
-  const height = media.getBoundingClientRect().height;
-
-  
-  result.style.height = height + 'px';
-  result.style.display = 'flex';
-  result.style.flexDirection = 'column';
-  result.style.justifyContent = 'center';
-}
-
-
-setTimeout(matchResultBoxHeight, 150);
-
-
-window.addEventListener('resize', () => setTimeout(matchResultBoxHeight, 150));
-new MutationObserver(() => setTimeout(matchResultBoxHeight, 150))
-  .observe(document.body, {subtree: true, childList: true});
-</script>
-""", height=0)
-
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
