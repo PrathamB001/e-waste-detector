@@ -42,38 +42,56 @@ st.markdown("""
     .stApp {background: transparent;}
     h1 {font-family: 'Montserrat', sans-serif; text-align: center; color: #00ff88; margin-bottom: 5px;}
     .subtitle {text-align: center; color: #ccc; margin-bottom: 30px;}
+
     .result-box {
         padding: 20px;
         border-radius: 15px;
         text-align: center;
         margin: 20px 0;
-        height: 100%;
+        min-height: 250px;
         display: flex;
         flex-direction: column;
         justify-content: center;
     }
+
     .ewaste {background: #ff4444; color: white;}
     .non-ewaste {background: #00C851; color: white;}
     .confidence {font-size: 1.5em; font-weight: bold;}
     .footer {text-align: center; color: #888; margin-top: 50px;}
+
+    
+    [data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        align-items: center !important; /* Center both columns vertically */
+    }
+
+    [data-testid="column"] {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important; /* Centers content vertically in each col */
+    }
+
+    [data-testid="column"] > div {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
     
     [data-testid="column"]:has(img) {
-        display: flex !important;
-        align-items: flex-start !important;  /* top align the image */
+        gap: 15px !important;
+        justify-content: center !important;
     }
 
-    [data-testid="column"]:has(.result-box) {
-        display: flex !important;
-        align-items: flex-start !important;  /* same top baseline */
-        padding-top: 6px;  /* fine-tune: adjust this number until perfect (5–10px typical) */
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+        display: block !important;
     }
-
-    .result-box {
-        transform: translateY(-4px);  /* nudges it upward slightly */
-    }
-
 </style>
 """, unsafe_allow_html=True)
+
 
 
 
@@ -127,6 +145,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
