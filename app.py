@@ -4,8 +4,7 @@ import tensorflow as tf
 from PIL import Image
 import numpy as np
 import cv2
-import pyttsx3
-import threading
+import streamlit.components.v1 as components
 
 
 st.set_page_config(page_title="E-Waste AI", page_icon="Recycle", layout="centered")
@@ -23,15 +22,17 @@ output_details = interpreter.get_output_details()
 
 
 def speak(text):
-    def run():
-        try:
-            engine = pyttsx3.init()
-            engine.setProperty('rate', 160)
-            engine.say(text)
-            engine.runAndWait()
-        except:
-            pass  
-    threading.Thread(target=run, daemon=True).start()
+    components.html(rf"""
+    <script>
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance("{text}");
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    synth.cancel();
+    synth.speak(utterance);
+    </script>
+    """, height=0)
 
 
 st.markdown("""
@@ -100,5 +101,6 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
