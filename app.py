@@ -47,7 +47,6 @@ st.markdown("""
         border-radius: 15px;
         text-align: center;
         margin: 20px 0;
-        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -56,14 +55,17 @@ st.markdown("""
     .non-ewaste {background: #00C851; color: white;}
     .confidence {font-size: 1.5em; font-weight: bold;}
     .footer {text-align: center; color: #888; margin-top: 50px;}
-    [data-testid="column"] {display: flex; align-items: center;}
 
-    
-    [data-testid="stVerticalBlock"] > div[data-testid="column"]:nth-child(1),
-    [data-testid="stVerticalBlock"] > div[data-testid="column"]:nth-child(2) {
+    /* Align both left and right blocks horizontally */
+    [data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    [data-testid="column"] > div {
         display: flex;
-        align-items: center;
         justify-content: center;
+        align-items: center;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -120,6 +122,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
