@@ -149,13 +149,11 @@ if img_file:
     # Download
     _, buf = cv2.imencode('.jpg', cv2.cvtColor(display_img, cv2.COLOR_RGB2BGR))
     st.download_button("Save Photo", buf.tobytes(), f"{label.lower()}.jpg", "image/jpeg")
-    # Download
-_, buf = cv2.imencode('.jpg', cv2.cvtColor(display_img, cv2.COLOR_RGB2BGR))
-st.download_button("Save Photo", buf.tobytes(), f"{label.lower()}.jpg", "image/jpeg")
-
+ 
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
