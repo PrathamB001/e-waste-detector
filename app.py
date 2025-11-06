@@ -49,8 +49,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-st.markdown("<h1>Recycle E-Waste Detector AI</h1>", unsafe_allow_html=True)
-st.markdown("<p class='subtitle'>Point your camera at waste and click. AI detects in 0.1s</p>", unsafe_allow_html=True)
+st.markdown("<h1>♻️ E-Waste Detector AI</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center; color:#ccc;'>Point and click. Maintain distance and good lighting</p>", unsafe_allow_html=True)
 
 
 voice_on = st.checkbox("Enable Voice", value=True, key="voice")
@@ -99,3 +99,4 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
