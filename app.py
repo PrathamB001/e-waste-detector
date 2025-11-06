@@ -4,6 +4,9 @@ import tensorflow as tf
 from PIL import Image
 import numpy as np
 import cv2
+import pyttsx3
+import threading
+from io import BytesIO
 
 st.set_page_config(page_title="E-Waste AI", page_icon="♻️", layout="centered")
 
@@ -16,6 +19,18 @@ def load_model():
 interpreter = load_model()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
+
+#Voice function 
+def speak(text):
+    def run():
+        try:
+            engine = pyttsx3.init()
+            engine.setProperty('rate', 160)
+            engine.say(text)
+            engine.runAndWait()
+        except:
+            pass  # Fails silently on mobile (no audio support)
+    threading.Thread(target=run, daemon=True).start()
 
 st.markdown("""
 <style>
@@ -30,7 +45,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("<h1>♻️ E-Waste Detector AI</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center; color:#ccc;'>Point your camera at waste — AI detects in 0.1s</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center; color:#ccc;'>Point your camera at waste and click.AI detects in 0.1s</p>", unsafe_allow_html=True)
 
 img_file = st.camera_input("Live Camera", key="camera")
 
@@ -64,4 +79,7 @@ if img_file:
     _, buf = cv2.imencode('.jpg', cv2.cvtColor(display_img, cv2.COLOR_RGB2BGR))
     st.download_button("Save Photo", buf.tobytes(), f"{label.lower()}.jpg", "image/jpeg")
 
-st.markdown("<p style='text-align:center; color:#888; margin-top:50px;'>Built with Streamlit + TFLite | 95% Accuracy</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center; color:#888; margin-top:50px;'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
+
+
