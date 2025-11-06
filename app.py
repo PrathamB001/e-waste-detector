@@ -46,6 +46,8 @@ st.markdown("""
 
 st.markdown("<h1>♻️ E-Waste Detector AI</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align:center; color:#ccc;'>Point your camera at waste and click.AI detects in 0.1s</p>", unsafe_allow_html=True)
+#voice toggle 
+voice_on = st.checkbox("Enable Voice", value=True, key="voice")
 
 img_file = st.camera_input("Live Camera", key="camera")
 
