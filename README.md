@@ -1,5 +1,5 @@
 # E-Waste Detector
-
+visit : to-e-or-not-to-e.streamlit.app
 **Binary classifier (e-waste vs non-e-waste)** trained with **MobileNetV2** on a balanced dataset of **4,800** images.
 
 | Metric | Value |
