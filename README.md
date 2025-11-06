@@ -1,5 +1,6 @@
 # E-Waste Detector
-visit : to-e-or-not-to-e.streamlit.app
+**Live Web App:**  
+[Try it now — Point your phone camera!](https://to-e-or-not-to-e.streamlit.app)
 **Binary classifier (e-waste vs non-e-waste)** trained with **MobileNetV2** on a balanced dataset of **4,800** images.
 
 | Metric | Value |
