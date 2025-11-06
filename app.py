@@ -108,8 +108,21 @@ st.markdown("<p style='text-align:center; color:#ccc;'>Point and click. Maintain
 
 voice_on = st.checkbox("Enable Voice", value=True, key="voice")
 
+#image or camera
+upload_option = st.radio(
+    "Choose image input method:",
+    ("Use Camera", "Upload Image"),
+    horizontal=True
+)
 
-img_file = st.camera_input("Live Camera", key="camera")
+if upload_option == "Upload Image":
+    uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+    img_file = uploaded_file
+else:
+    img_file = st.camera_input("Live Camera", key="camera")
+
+
+
 
 if img_file:
     # Load & preprocess
@@ -153,6 +166,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
