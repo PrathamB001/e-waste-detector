@@ -102,7 +102,7 @@ st.markdown("""
 
 
 
-st.markdown("<h1>♻️ E-Waste Detector AI</h1>", unsafe_allow_html=True)
+st.markdown("<h1>♻️ E-Waste Detector</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align:center; color:#ccc;'>Point and click. Maintain distance and good lighting</p>", unsafe_allow_html=True)
 
 
@@ -153,6 +153,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
