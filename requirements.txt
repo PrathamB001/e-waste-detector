@@ -3,5 +3,4 @@ tensorflow
 pillow
 opencv-python-headless
 numpy
-pyttsx3
-qrcode
+gTTs
