@@ -7,6 +7,7 @@ import cv2
 import streamlit.components.v1 as components
 from gtts import gTTS
 import io
+import base64
 
 st.set_page_config(page_title="E-Waste AI", page_icon="Recycle", layout="centered")
 
@@ -26,7 +27,14 @@ def speak(text):
     tts = gTTS(text)
     audio_fp = io.BytesIO()
     tts.write_to_fp(audio_fp)
-    st.audio(audio_fp.getvalue(), format='audio/mp3')
+    audio_bytes = audio_fp.getvalue()
+    b64_audio = base64.b64encode(audio_bytes).decode()
+    components.html(f"""
+    <audio autoplay>
+      <source src="data:audio/mp3;base64,{b64_audio}" type="audio/mp3">
+    </audio>
+    """, height=0)
+
 
 st.markdown("""
 <style>
@@ -94,6 +102,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
