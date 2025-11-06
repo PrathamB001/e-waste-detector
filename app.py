@@ -45,6 +45,7 @@ st.markdown("""
     .non-ewaste {background: #00C851; color: white;}
     .confidence {font-size: 1.5em; font-weight: bold;}
     .footer {text-align: center; color: #888; margin-top: 50px;}
+    [data-testid="column"] {display: flex; align-items: center;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -99,4 +100,5 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
