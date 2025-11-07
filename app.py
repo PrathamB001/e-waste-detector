@@ -12,6 +12,10 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import streamlit as st
 import json,tempfile
+from datetime import datetime, timezone
+#time-zone aware timestamp
+timestamp = datetime.now(timezone.utc).isoformat()
+
 
 # Firebase Initialization 
 if not firebase_admin._apps:
@@ -197,6 +201,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
