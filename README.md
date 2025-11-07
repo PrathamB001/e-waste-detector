@@ -119,11 +119,7 @@ Stored securely via Streamlit Secrets Management.
 Loaded at runtime using st.secrets["FIREBASE_KEY"].
 
 
-📊 Firestore Dashboard (Example Logs)
-Detection Logs in Firestore
-<img src="screenshots/firestore_logs.png" alt="Firestore Logs">
-Logged Fields per Entry
-<img src="screenshots/firestore_fields.png" alt="Firestore Fields">
+📊 Firestore Dashboard 
 
 <img width="1426" height="656" alt="image" src="https://github.com/user-attachments/assets/c7ab3bc4-1dd2-48b0-9d99-8ab6358b121a" />
 
