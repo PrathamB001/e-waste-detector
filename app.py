@@ -9,23 +9,19 @@ from gtts import gTTS
 import io
 import base64
 import firebase_admin
-import firebase_admin
 from firebase_admin import credentials, firestore
 import streamlit as st
-import tempfile
+import json,tempfile
 
 # Firebase Initialization 
 if not firebase_admin._apps:
-    # Write FIREBASE_KEY from Streamlit secrets to a temporary JSON file
+    key_json = json.loads(st.secrets["FIREBASE_KEY"])  # decode escaped string
     with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w") as f:
-        f.write(st.secrets["FIREBASE_KEY"])
+        f.write(key_json)
         temp_key_path = f.name
-
-    # Initialize Firebase using that temp file
     cred = credentials.Certificate(temp_key_path)
     firebase_admin.initialize_app(cred)
 
-# Create Firestore client
 db = firestore.client()
 
 
@@ -201,6 +197,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
