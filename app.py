@@ -8,7 +8,17 @@ import streamlit.components.v1 as components
 from gtts import gTTS
 import io
 import base64
+import firebase_admin
+from firebase_admin import credentials, firestore
+import json, streamlit as st
 
+#Firebase
+if not firebase_admin._apps:
+    cred = credentials.Certificate(json.loads(st.secrets["FIREBASE_KEY"]))
+    firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+#Streamlit setup
 st.set_page_config(page_title="E-Waste AI", page_icon="Recycle", layout="centered")
 
 
@@ -22,7 +32,7 @@ interpreter = load_model()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
-
+#Voice setup
 def speak(text):
     tts = gTTS(text)
     audio_fp = io.BytesIO()
@@ -35,6 +45,7 @@ def speak(text):
     </audio>
     """, height=0)
 
+#Streamlit UI 
 
 st.markdown("""
 <style>
@@ -115,6 +126,7 @@ upload_option = st.radio(
     horizontal=True
 )
 
+#Option for image uploading 
 if upload_option == "Upload Image":
     uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
     img_file = uploaded_file
@@ -166,6 +178,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
