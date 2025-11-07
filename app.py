@@ -154,6 +154,16 @@ if img_file:
     conf = 1 - prob if prob < 0.5 else prob
     css_class = "ewaste" if prob < 0.5 else "non-ewaste"
 
+    try:
+        db.collection("detections").add({
+            "timestamp": datetime.datetime.utcnow().isoformat(),
+            "label": label,
+            "confidence": float(conf),
+            "method": upload_option,
+            })
+        except Exception as e:
+            st.warning(f"Failed to log to Firestore: {e}")
+
     # VOICE FIRST 
     if voice_on:
         speak(f"{label} detected. Confidence {int(conf*100)} percent.")
@@ -178,6 +188,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
