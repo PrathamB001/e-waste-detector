@@ -9,14 +9,25 @@ from gtts import gTTS
 import io
 import base64
 import firebase_admin
+import firebase_admin
 from firebase_admin import credentials, firestore
-import json, streamlit as st
+import streamlit as st
+import tempfile
 
-#Firebase
+# Firebase Initialization 
 if not firebase_admin._apps:
-    cred = credentials.Certificate(json.loads(st.secrets["FIREBASE_KEY"]))
+    # Write FIREBASE_KEY from Streamlit secrets to a temporary JSON file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w") as f:
+        f.write(st.secrets["FIREBASE_KEY"])
+        temp_key_path = f.name
+
+    # Initialize Firebase using that temp file
+    cred = credentials.Certificate(temp_key_path)
     firebase_admin.initialize_app(cred)
+
+# Create Firestore client
 db = firestore.client()
+
 
 #Streamlit setup
 st.set_page_config(page_title="E-Waste AI", page_icon="Recycle", layout="centered")
@@ -190,6 +201,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
