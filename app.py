@@ -210,12 +210,18 @@ if img_file:
  
 
 #  FOOTER 
-st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
-
-
-
-
-
+st.markdown(
+    """
+    <p class='footer' style='text-align:center; color:#ccc;'>
+    Built by Pratham | 95% Accuracy<br>
+    <span style='font-size:13px; color:#aaa;'>
+    This project highlights the importance of AI-driven e-waste detection for sustainable recycling.<br>
+    Around <b>62 million tonnes</b> of e-waste were generated globally in 2024, with toxic metals such as lead and mercury posing serious health risks including neurological and respiratory disorders.
+    </span>
+    </p>
+    """,
+    unsafe_allow_html=True
+)
 
 
 
