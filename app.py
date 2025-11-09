@@ -125,7 +125,16 @@ st.markdown("""
 
 
 st.markdown("<h1>♻️ E-Waste Detector</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center; color:#ccc;'>Point and click. Maintain distance and good lighting</p>", unsafe_allow_html=True)
+st.markdown(
+    """
+    <p style='text-align:center; color:#ccc;'>Point and click. Maintain distance and good lighting</p>
+    <p style='text-align:center; color:#aaa; font-size:13px;'>
+    Note: MobileNetV2 works best for single-object detection. For multiple objects, YOLO may be used in future versions.
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
 
 
 voice_on = st.checkbox("Enable Voice", value=True, key="voice")
@@ -202,6 +211,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
