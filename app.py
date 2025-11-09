@@ -16,12 +16,6 @@ from datetime import datetime, timezone
 #time-zone aware timestamp
 timestamp = datetime.now(timezone.utc).isoformat()
 
-try:
-    key_json = st.secrets["FIREBASE_KEY"]
-    json.loads(key_json)
-    st.write("✅ Key parses fine")
-except Exception as e:
-    st.error(f"❌ JSON decoding failed: {e}")
 
 # Firebase Initialization 
 if not firebase_admin._apps:
@@ -208,6 +202,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
