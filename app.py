@@ -16,12 +16,18 @@ from datetime import datetime, timezone
 #time-zone aware timestamp
 timestamp = datetime.now(timezone.utc).isoformat()
 
+try:
+    key_json = st.secrets["FIREBASE_KEY"]
+    json.loads(key_json)
+    st.write("✅ Key parses fine")
+except Exception as e:
+    st.error(f"❌ JSON decoding failed: {e}")
 
 # Firebase Initialization 
 if not firebase_admin._apps:
-    key_json = json.loads(st.secrets["FIREBASE_KEY"])  # decode escaped string
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w") as f:
-        f.write(key_json)
+    key_dict = json.loads(st.secrets["FIREBASE_KEY"])  # decode escaped string
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w", encoding="utf-8") as f:
+        json.dump(key_dict, f)
         temp_key_path = f.name
     cred = credentials.Certificate(temp_key_path)
     firebase_admin.initialize_app(cred)
@@ -202,6 +208,7 @@ if img_file:
 
 #  FOOTER 
 st.markdown("<p class='footer'>Built by Pratham | 95% Accuracy</p>", unsafe_allow_html=True)
+
 
 
 
