@@ -35,7 +35,7 @@ st.set_page_config(page_title="E-Waste AI", page_icon="Recycle", layout="centere
 
 @st.cache_resource
 def load_model():
-    interpreter = tf.lite.Interpreter(model_path="ewaste.tflite")
+    interpreter = tf.lite.Interpreter(model_path="waste_model_quantized.tflite")
     interpreter.allocate_tensors()
     return interpreter
 
@@ -161,18 +161,26 @@ if img_file:
     img = Image.open(img_file).convert("RGB")
     display_img = np.array(img)
     img = img.resize((224, 224))
-    arr = np.array(img) / 255.0
-    arr = np.expand_dims(arr, axis=0).astype(np.float32)
+    arr = np.array(img).astype(np.uint8)
+    arr = np.expand_dims(arr, axis=0)
 
     # Predict
     interpreter.set_tensor(input_details[0]['index'], arr)
     interpreter.invoke()
-    prob = interpreter.get_tensor(output_details[0]['index'])[0][0]
+    output = interpreter.get_tensor(output_details[0]['index'])[0]
+    pred_idx = np.argmax(output)
+    confidence = np.max(output) / 255.0   # scale from uint8
+    classes = ["E-WASTE", "NON E-WASTE", "ORGANIC"]
+    label = classes[pred_idx]
+    conf = confidence
+    if label == "E-WASTE":
+        css_class = "ewaste"
+    elif label == "NON-EWASTE":
+        css_class = "non-ewaste"
+    else:
+        css_class = "organic/general"
 
-    # Result
-    label = "E-WASTE" if prob < 0.5 else "NON E-WASTE"
-    conf = 1 - prob if prob < 0.5 else prob
-    css_class = "ewaste" if prob < 0.5 else "non-ewaste"
+
 
     #  Save result to Firestore 
     try:
@@ -222,6 +230,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 
 
