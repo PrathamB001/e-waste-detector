@@ -176,9 +176,9 @@ if img_file:
     if label == "E-WASTE":
         css_class = "ewaste"
     elif label == "NON-EWASTE":
-        css_class = "non-ewaste"
+        css_class = "general"
     else:
-        css_class = "organic/general"
+        css_class = "organic"
 
 
 
@@ -230,6 +230,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 
 
