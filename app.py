@@ -10,16 +10,16 @@ import io
 import base64
 import firebase_admin
 from firebase_admin import credentials, firestore
-import streamlit as st
-import json,tempfile
+import json, tempfile
 from datetime import datetime, timezone
-#time-zone aware timestamp
+
+# time-zone aware timestamp
 timestamp = datetime.now(timezone.utc).isoformat()
 
 
 # Firebase Initialization 
 if not firebase_admin._apps:
-    key_dict = json.loads(st.secrets["FIREBASE_KEY"])  # decode escaped string
+    key_dict = json.loads(st.secrets["FIREBASE_KEY"])
     with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w", encoding="utf-8") as f:
         json.dump(key_dict, f)
         temp_key_path = f.name
@@ -29,7 +29,7 @@ if not firebase_admin._apps:
 db = firestore.client()
 
 
-#Streamlit setup
+# Streamlit setup
 st.set_page_config(page_title="E-Waste AI", page_icon="Recycle", layout="centered")
 
 
@@ -43,7 +43,8 @@ interpreter = load_model()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
-#Voice setup
+
+# Voice setup
 def speak(text):
     tts = gTTS(text)
     audio_fp = io.BytesIO()
@@ -56,7 +57,8 @@ def speak(text):
     </audio>
     """, height=0)
 
-#Streamlit UI 
+
+# Streamlit UI 
 
 st.markdown("""
 <style>
@@ -77,54 +79,17 @@ st.markdown("""
     }
 
     .ewaste {background: #ff4444; color: white;}
-    .non-ewaste {background: #00C851; color: white;}
+    .general {background: #00C851; color: white;}
+    .organic {background: #ffbb33; color: black;}
+
     .confidence {font-size: 1.5em; font-weight: bold;}
     .footer {text-align: center; color: #888; margin-top: 50px;}
-
-    
-    [data-testid="stHorizontalBlock"] {
-        display: flex !important;
-        align-items: center !important; /* Center both columns vertically */
-    }
-
-    [data-testid="column"] {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important; /* Centers content vertically in each col */
-    }
-
-    [data-testid="column"] > div {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-
-    
-    [data-testid="column"]:has(img) {
-        gap: 15px !important;
-        justify-content: center !important;
-    }
-
-    img {
-        max-width: 100% !important;
-        height: auto !important;
-        display: block !important;
-    }
-    [data-testid="column"]:has(.result-box) .result-box {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-
-    
 </style>
 """, unsafe_allow_html=True)
 
 
-
-
 st.markdown("<h1>♻️ E-Waste Detector</h1>", unsafe_allow_html=True)
+
 st.markdown(
     """
     <p style='text-align:center; color:#ccc;'>Point and click. Maintain distance and good lighting</p>
@@ -135,25 +100,19 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
-
 voice_on = st.checkbox("Enable Voice", value=True, key="voice")
 
-#image or camera
 upload_option = st.radio(
     "Choose image input method:",
     ("Use Camera", "Upload Image"),
     horizontal=True
 )
 
-#Option for image uploading 
 if upload_option == "Upload Image":
     uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
     img_file = uploaded_file
 else:
     img_file = st.camera_input("Live Camera", key="camera")
-
-
 
 
 if img_file:
@@ -168,21 +127,22 @@ if img_file:
     interpreter.set_tensor(input_details[0]['index'], arr)
     interpreter.invoke()
     output = interpreter.get_tensor(output_details[0]['index'])[0]
+
     pred_idx = np.argmax(output)
-    confidence = np.max(output) / 255.0   # scale from uint8
-    classes = ["E-WASTE", "NON E-WASTE", "ORGANIC"]
+    confidence = np.max(output) / 255.0
+
+    classes = ["E-WASTE", "GENERAL", "ORGANIC"]
     label = classes[pred_idx]
     conf = confidence
+
     if label == "E-WASTE":
         css_class = "ewaste"
-    elif label == "NON-EWASTE":
+    elif label == "GENERAL":
         css_class = "general"
     else:
         css_class = "organic"
 
-
-
-    #  Save result to Firestore 
+    # Save result to Firestore
     try:
         timestamp = datetime.now(timezone.utc).isoformat()
         db.collection("detections").add({
@@ -194,12 +154,11 @@ if img_file:
     except Exception as e:
         st.warning(f"Failed to log to Firestore: {e}")
 
-
-    # VOICE FIRST 
+    # Voice
     if voice_on:
         speak(f"{label} detected. Confidence {int(conf*100)} percent.")
 
-    # THEN DISPLAY (After voice starts) 
+    # Display
     col1, col2 = st.columns([1, 1])
     with col1:
         st.image(display_img, use_column_width=True)
@@ -215,13 +174,13 @@ if img_file:
     # Download
     _, buf = cv2.imencode('.jpg', cv2.cvtColor(display_img, cv2.COLOR_RGB2BGR))
     st.download_button("Save Photo", buf.tobytes(), f"{label.lower()}.jpg", "image/jpeg")
- 
 
-#  FOOTER 
+
+# FOOTER
 st.markdown(
     """
     <p class='footer' style='text-align:center; color:#ccc;'>
-    Built by Pratham | 95% Accuracy<br>
+    Built by Pratham | 94% Accuracy<br>
     <span style='font-size:13px; color:#aaa;'>
     This project highlights the importance of AI-driven e-waste detection for sustainable recycling.<br>
     Around <b>62 million tonnes</b> of e-waste were generated globally in 2024, with toxic metals such as lead and mercury posing serious health risks including neurological and respiratory disorders.
@@ -230,26 +189,3 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
