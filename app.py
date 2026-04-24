@@ -12,10 +12,10 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import json, tempfile
 from datetime import datetime, timezone
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 # time-zone aware timestamp
 timestamp = datetime.now(timezone.utc).isoformat()
-
 
 # Firebase Initialization 
 if not firebase_admin._apps:
@@ -28,14 +28,13 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
-
 # Streamlit setup
 st.set_page_config(page_title="E-Waste AI", page_icon="Recycle", layout="centered")
 
-
 @st.cache_resource
 def load_model():
-    interpreter = tf.lite.Interpreter(model_path="waste_model_quantized.tflite")
+    # Updated to your new model filename
+    interpreter = tf.lite.Interpreter(model_path="waste_model (1).tflite")
     interpreter.allocate_tensors()
     return interpreter
 
@@ -43,6 +42,21 @@ interpreter = load_model()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
+# Exact 12-Class Mapping from your labels.json
+class_mapping = {
+    0: "Biological",
+    1: "Brown Glass",
+    2: "Cardboard",
+    3: "Clothes",
+    4: "E-Waste",
+    5: "Green Glass",
+    6: "Metal",
+    7: "Paper",
+    8: "Plastic",
+    9: "Shoes",
+    10: "Trash",
+    11: "White Glass"
+}
 
 # Voice setup
 def speak(text):
@@ -57,9 +71,7 @@ def speak(text):
     </audio>
     """, height=0)
 
-
 # Streamlit UI 
-
 st.markdown("""
 <style>
     .main {background: linear-gradient(135deg, #1e3c72, #2a5298); color: white;}
@@ -86,7 +98,6 @@ st.markdown("""
     .footer {text-align: center; color: #888; margin-top: 50px;}
 </style>
 """, unsafe_allow_html=True)
-
 
 st.markdown("<h1>♻️ E-Waste Detector</h1>", unsafe_allow_html=True)
 
@@ -116,12 +127,13 @@ else:
 
 
 if img_file:
-    # Load & preprocess
+    # Load & preprocess specifically for MobileNetV2 (float32, [-1, 1] range)
     img = Image.open(img_file).convert("RGB")
     display_img = np.array(img)
     img = img.resize((224, 224))
-    arr = np.array(img).astype(np.uint8)
+    arr = np.array(img).astype(np.float32)
     arr = np.expand_dims(arr, axis=0)
+    arr = preprocess_input(arr)
 
     # Predict
     interpreter.set_tensor(input_details[0]['index'], arr)
@@ -129,34 +141,45 @@ if img_file:
     output = interpreter.get_tensor(output_details[0]['index'])[0]
 
     pred_idx = np.argmax(output)
-    confidence = np.max(output) / 255.0
-
-    classes = ["E-WASTE", "GENERAL", "ORGANIC"]
-    label = classes[pred_idx]
-    conf = confidence
-
-    if label == "E-WASTE":
-        css_class = "ewaste"
-    elif label == "GENERAL":
-        css_class = "general"
+    
+    # Handle confidence based on whether TFLite kept it as float or quantized to uint8
+    if output.dtype == np.uint8:
+        confidence = float(np.max(output)) / 255.0
     else:
-        css_class = "organic"
+        confidence = float(np.max(output))
 
-    # Save result to Firestore
+    specific_label = class_mapping[pred_idx]
+    
+    # Group the 12 classes into your existing UI CSS categories
+    if specific_label == "E-Waste":
+        css_class = "ewaste"
+        master_category = "E-WASTE"
+    elif specific_label in ["Biological", "Cardboard", "Paper"]:
+        css_class = "organic"
+        master_category = "ORGANIC"
+    else:
+        css_class = "general"
+        master_category = "GENERAL"
+
+    # Display the specific item found, but color code it by master category
+    display_label = specific_label.upper()
+
+    # Save result to Firestore (Logging specific item and its master category)
     try:
         timestamp = datetime.now(timezone.utc).isoformat()
         db.collection("detections").add({
             "timestamp": timestamp,
-            "label": label,
-            "confidence": float(conf),
+            "label": display_label,
+            "category": master_category,
+            "confidence": float(confidence),
             "method": upload_option,
         })
     except Exception as e:
         st.warning(f"Failed to log to Firestore: {e}")
 
-    # Voice
+    # Voice (Reads out the specific item)
     if voice_on:
-        speak(f"{label} detected. Confidence {int(conf*100)} percent.")
+        speak(f"{specific_label} detected. Confidence {int(confidence*100)} percent.")
 
     # Display
     col1, col2 = st.columns([1, 1])
@@ -165,16 +188,15 @@ if img_file:
     with col2:
         st.markdown(f"""
         <div class="result-box {css_class}">
-            <h2>{label}</h2>
-            <div class="confidence">{conf:.1%}</div>
+            <h2>{display_label}</h2>
+            <div class="confidence">{confidence:.1%}</div>
             <p>Confidence</p>
         </div>
         """, unsafe_allow_html=True)
 
     # Download
     _, buf = cv2.imencode('.jpg', cv2.cvtColor(display_img, cv2.COLOR_RGB2BGR))
-    st.download_button("Save Photo", buf.tobytes(), f"{label.lower()}.jpg", "image/jpeg")
-
+    st.download_button("Save Photo", buf.tobytes(), f"{display_label.lower()}.jpg", "image/jpeg")
 
 # FOOTER
 st.markdown(
